@@ -1,9 +1,13 @@
 using UnityEngine;
+using UnityTemplateProjects;
 
 public class OctopusController : MonoBehaviour
 {
     [SerializeField] 
     private OctopusView view;
+
+    [SerializeField]
+    private int health = 3;
     
     [SerializeField]
     private float speed = 5f;
@@ -86,5 +90,16 @@ public class OctopusController : MonoBehaviour
     private void Update()
     {
         currentSwimCooldown -= Time.deltaTime;
+    }
+
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.tag.Equals(Tag.Obstacle))
+        {
+            Debug.Log("Hit obstacle");
+            health -= 1;
+            var knockBackForce = other.gameObject.GetComponent<ObstacleController>().GetKnockBack();
+            rb.AddForce((transform.position - other.gameObject.transform.position).normalized * knockBackForce, ForceMode2D.Impulse);
+        }
     }
 }
