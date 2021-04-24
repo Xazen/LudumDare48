@@ -41,7 +41,6 @@ public class OctopusController : MonoBehaviour
         {
             rb.velocity = rb.velocity.normalized * maxMoveSpeed;
         }
-        Debug.Log(rb.velocity.magnitude);
     }
 
     private void Update()
