@@ -64,6 +64,7 @@ public class OctopusController : MonoBehaviour
         }
 
         lastVelocity = rb.velocity.magnitude;
+        Debug.Log($"{lastVelocity}");
     }
 
     private void PlayAnimation(Vector3 directionInput)
