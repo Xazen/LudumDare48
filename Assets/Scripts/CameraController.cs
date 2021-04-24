@@ -25,11 +25,19 @@ public class CameraController : MonoBehaviour
         pos.x = Mathf.Clamp01(pos.x);         
         pos.y = Mathf.Clamp01(pos.y);
         Vector3 playerConvertedWorldPoint = Camera.main.ViewportToWorldPoint(pos);
-        Vector3 playerConvertedWorldPointDiff = playerConvertedWorldPoint - lastPlayerConvertedWorldPoint;
-        if (pos.x < 0.4f || pos.x > 0.6f || pos.y < 0.4f || pos.y > 0.6f)
-        {
-            transform.Translate(playerConvertedWorldPointDiff);
-        }
-        lastPlayerConvertedWorldPoint = playerConvertedWorldPoint;
+        transform.position = new Vector3(playerConvertedWorldPoint.x, playerConvertedWorldPoint.y, gameObject.transform.position.z);
+        
+        
+        // Buggy camera with bounds
+        // Vector3 pos = Camera.main.WorldToViewportPoint(player.transform.position);         
+        // pos.x = Mathf.Clamp01(pos.x);         
+        // pos.y = Mathf.Clamp01(pos.y);
+        // Vector3 playerConvertedWorldPoint = Camera.main.ViewportToWorldPoint(pos);
+        // Vector3 playerConvertedWorldPointDiff = playerConvertedWorldPoint - lastPlayerConvertedWorldPoint;
+        // if (pos.x < 0.4f || pos.x > 0.6f || pos.y < 0.4f || pos.y > 0.6f)
+        // {
+        //     transform.Translate(playerConvertedWorldPointDiff);
+        // }
+        // lastPlayerConvertedWorldPoint = playerConvertedWorldPoint;
     }
 }
