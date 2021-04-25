@@ -9,9 +9,13 @@ public class ScenesController : MonoBehaviour
     public const int Game = 1;
     public const int PauseMenu = 2;
     public const int Story = 3;
-    public const int Boot = 3;
+    public const int Boot = 4;
+    public const int Win = 5;
+    public const int Lose = 6;
     
     private Scene pauseScene;
+    private Scene winScene;
+    private Scene loseScene;
     private Scene storyScene;
 
     public delegate void SceneDelegate(int sceneId);
@@ -36,6 +40,26 @@ public class ScenesController : MonoBehaviour
         SceneManager.LoadScene(MainMenu);
     }
 
+    public void OpenWin()
+    {
+        OpenScene(Win, out winScene);
+    }
+
+    public void CloseWin()
+    {
+        CloseScene(winScene, Win);
+    }
+    
+    public void OpenLose()
+    {
+        OpenScene(Lose, out loseScene);
+    }
+
+    public void CloseLose()
+    {
+        CloseScene(loseScene, Lose);
+    }
+    
     public void OpenPause()
     {
         OpenScene(PauseMenu, out pauseScene);

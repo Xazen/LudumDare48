@@ -10,11 +10,22 @@ public class GameController : MonoBehaviour
         Singletons.GameController = this;
         ShowStory();
         Singletons.ScenesController.OnSceneUnloaded += OnSceneUnloaded;
+        Singletons.ScenesController.OnSceneLoaded += OnSceneLoaded;
     }
 
     private void OnDestroy()
     {
         Singletons.ScenesController.OnSceneUnloaded -= OnSceneUnloaded;
+        Singletons.ScenesController.OnSceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(int sceneid)
+    {
+        if (sceneid == ScenesController.Win || 
+            sceneid == ScenesController.Lose)
+        {
+            IsGameRunning = false;
+        }
     }
 
     public bool IsGameRunning { get; private set; }

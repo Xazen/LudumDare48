@@ -155,7 +155,7 @@ public class OctopusController : MonoBehaviour
     {
         if (other.gameObject.tag.Equals(Tag.Goal))
         {
-            Debug.Log("WIN!");
+            Singletons.ScenesController.OpenWin();
         }
     }
 
@@ -174,6 +174,7 @@ public class OctopusController : MonoBehaviour
             KnockBack(other, other.gameObject.GetComponent<ObstacleController>().GetKnockBack());
             currentDamageCooldown = damageCooldown;
             view.PlayHurt(damageCooldown);
+            Singletons.ScenesController.OpenLose();
         }
     }
 
