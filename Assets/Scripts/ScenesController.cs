@@ -6,10 +6,11 @@ using UnityTemplateProjects;
 
 public class ScenesController : MonoBehaviour
 {
+    public const int MainMenu = 0;
     public const int Game = 1;
-    public const int MainMenu = 1;
     public const int PauseMenu = 2;
     public const int Story = 3;
+    public const int Boot = 3;
     
     private Scene pauseScene;
     private Scene storyScene;
@@ -20,6 +21,7 @@ public class ScenesController : MonoBehaviour
     {
         DontDestroyOnLoad(this);
         Singletons.ScenesController = this;
+        SwitchToMenu();
     }
 
     public void SwitchToGame()
