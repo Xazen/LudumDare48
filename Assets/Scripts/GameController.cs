@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityTemplateProjects;
 
@@ -8,14 +9,19 @@ public class GameController : MonoBehaviour
     {
         Singletons.GameController = this;
         ShowStory();
+        Singletons.ScenesController.OnSceneUnloaded += OnSceneUnloaded;
     }
-    
+
+    private void OnDestroy()
+    {
+        Singletons.ScenesController.OnSceneUnloaded -= OnSceneUnloaded;
+    }
+
     public bool IsGameRunning { get; private set; }
 
     private void ShowStory()
     {
         Singletons.ScenesController.OpenStory();
-        Singletons.ScenesController.OnSceneUnloaded = OnSceneUnloaded;
     }
 
     private void OnSceneUnloaded(int sceneId)

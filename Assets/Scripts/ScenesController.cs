@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,7 +14,10 @@ public class ScenesController : MonoBehaviour
     private Scene pauseScene;
     private Scene storyScene;
 
-    public Action<int> OnSceneUnloaded;
+    public delegate void SceneDelegate(int sceneId);
+    public event SceneDelegate OnSceneUnloaded;
+    
+    public event SceneDelegate OnSceneLoaded;
     
     private void Start()
     {
@@ -36,34 +38,27 @@ public class ScenesController : MonoBehaviour
 
     public void OpenPause()
     {
-        pauseScene = SceneManager.LoadScene(PauseMenu, new LoadSceneParameters(LoadSceneMode.Additive));
+        OpenScene(PauseMenu, out pauseScene);
     }
 
     public void ClosePause()
     {
-        if (pauseScene.IsValid())
-        {
-            SceneManager.UnloadSceneAsync(PauseMenu);
-        }
+        CloseScene(pauseScene, PauseMenu);
+    }
+
+    public void OpenStory()
+    {
+        OpenScene(Story, out storyScene);
+    }
+
+    public void CloseStory()
+    {
+        CloseScene(storyScene, Story);
     }
 
     public void ExitApplication()
     {
         Application.Quit();
-    }
-
-    public void OpenStory()
-    {
-        storyScene = SceneManager.LoadScene(Story, new LoadSceneParameters(LoadSceneMode.Additive));
-    }
-    
-    public void CloseStory()
-    {
-        if (storyScene.IsValid())
-        {
-            AsyncOperation unloadSceneAsync = SceneManager.UnloadSceneAsync(storyScene);
-            StartCoroutine(TriggerCallback(unloadSceneAsync, Story));
-        }
     }
 
     private IEnumerator TriggerCallback(AsyncOperation unloadSceneAsync, int sceneId)
@@ -73,5 +68,25 @@ public class ScenesController : MonoBehaviour
             yield return null;
         }
         OnSceneUnloaded?.Invoke(sceneId);
+    }
+
+    public bool IsPauseOpened()
+    {
+        return pauseScene.IsValid();
+    }
+
+    private void CloseScene(Scene scene, int sceneId)
+    {
+        if (scene.IsValid())
+        {
+            AsyncOperation unloadSceneAsync = SceneManager.UnloadSceneAsync(sceneId);
+            StartCoroutine(TriggerCallback(unloadSceneAsync, sceneId));
+        }
+    }
+
+    private void OpenScene(int sceneId, out Scene scene)
+    {
+        scene = SceneManager.LoadScene(sceneId, new LoadSceneParameters(LoadSceneMode.Additive));
+        OnSceneLoaded?.Invoke(sceneId);
     }
 }

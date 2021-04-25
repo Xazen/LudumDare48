@@ -124,7 +124,7 @@ public class OctopusController : MonoBehaviour
         currentSwimCooldown -= Time.deltaTime;
         currentDamageCooldown -= Time.deltaTime;
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && !Singletons.ScenesController.IsPauseOpened())
         {
             Singletons.ScenesController.OpenPause();
         }

@@ -51,12 +51,14 @@ public class StoryMenu : MonoBehaviour
         var text = storyText.text;
         storyText.text = string.Empty;
         yield return new WaitForSeconds(1.5f);
-        var charAnimationDuration = 0.1f;
+        var charAnimationDuration = 0.13f;
         isCompleted = false;
         textTweener = storyText.DOText(text, text.Length * charAnimationDuration).OnComplete(() => isCompleted = true);
 
         for (int i = 0; i < text.Length; i++)
         {
+            charSfx.pitch = Random.Range(0.8f,
+                1.2f);
             charSfx.Play();
             yield return new WaitForSeconds(charAnimationDuration);
             if (isCompleted)
