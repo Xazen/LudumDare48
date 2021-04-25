@@ -56,6 +56,11 @@ public class OctopusController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (Singletons.GameController != null && !Singletons.GameController.IsGameRunning)
+        {
+            return;
+        }
+        
         Vector3 directionInput = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0);
         if (directionInput.magnitude > 0)
         {
@@ -111,8 +116,18 @@ public class OctopusController : MonoBehaviour
 
     private void Update()
     {
+        if (Singletons.GameController == null || !Singletons.GameController.IsGameRunning)
+        {
+            return;
+        }
+        
         currentSwimCooldown -= Time.deltaTime;
         currentDamageCooldown -= Time.deltaTime;
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Singletons.ScenesController.OpenPause();
+        }
     }
 
     private void OnParticleCollision(GameObject other)
@@ -164,7 +179,7 @@ public class OctopusController : MonoBehaviour
 
     private void OnTerrainCollision(Collision2D other)
     {
-        bumpSfx.Play();
+        // bumpSfx.Play();
         KnockBack(other.gameObject, terrainKnockBack);
     }
 }
