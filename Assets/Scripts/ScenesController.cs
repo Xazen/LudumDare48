@@ -5,11 +5,11 @@ using UnityTemplateProjects;
 
 public class ScenesController : MonoBehaviour
 {
-    public const int MainMenu = 0;
-    public const int Game = 1;
-    public const int PauseMenu = 2;
-    public const int Story = 3;
-    public const int Boot = 4;
+    public const int Boot = 0;
+    public const int MainMenu = 1;
+    public const int Game = 2;
+    public const int PauseMenu = 3;
+    public const int Story = 4;
     public const int Win = 5;
     public const int Lose = 6;
     
