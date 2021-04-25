@@ -1,15 +1,24 @@
-using System;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityTemplateProjects;
 
 public class OctopusController : MonoBehaviour
 {
+    [Header("Logic")]
     [SerializeField] 
     private OctopusView view;
 
+    [Header("Sfx")]
+    [SerializeField] 
+    private AudioSource swimSfx;
+
     [SerializeField]
-    private int health = 3;
+    private AudioSource bumpSfx;
     
+    [SerializeField]
+    private AudioSource hurtSfx;
+
+    [Header("Balancing - Movement")]
     [SerializeField]
     private float speed = 5f;
     
@@ -25,8 +34,15 @@ public class OctopusController : MonoBehaviour
     [SerializeField] 
     private float speedToSwitchToIdle = 3.3f;
 
-    [SerializeField] private float damageCooldown = 3;
+    [SerializeField]
+    private float terrainKnockBack = 10;
     
+    [Header("Balancing - Health")]
+    [SerializeField]
+    private int health = 3;
+
+    [SerializeField]
+    private float damageCooldown = 3;
     
     private Rigidbody2D rb;
     private float currentSwimCooldown;
@@ -51,6 +67,7 @@ public class OctopusController : MonoBehaviour
             rb.AddForce(directionInput.normalized * swimPower, ForceMode2D.Impulse);
             currentSwimCooldown = swimCooldown;
             PlayAnimation(directionInput);
+            swimSfx.Play();
         }
 
         if (rb.velocity.magnitude > maxMoveSpeed)
@@ -64,7 +81,6 @@ public class OctopusController : MonoBehaviour
         }
 
         lastVelocity = rb.velocity.magnitude;
-        Debug.Log($"{lastVelocity}");
     }
 
     private void PlayAnimation(Vector3 directionInput)
@@ -107,24 +123,48 @@ public class OctopusController : MonoBehaviour
         }
     }
 
-    private void OnObstacleCollision(GameObject other)
+    private void OnCollisionEnter2D(Collision2D other)
     {
-        Debug.Log("Hit obstacle");
-        if (currentDamageCooldown < 0)
+        switch (other.gameObject.tag)
         {
-            Debug.Log("Take damage");
-            health -= 1;
-            var knockBackForce = other.gameObject.GetComponent<ObstacleController>().GetKnockBack();
-            rb.AddForce((transform.position - other.gameObject.transform.position).normalized * knockBackForce, ForceMode2D.Impulse);
-            currentDamageCooldown = damageCooldown;
+            case Tag.Obstacle:
+                OnObstacleCollision(other.gameObject);
+                return;
+            case Tag.Terrain:
+                OnTerrainCollision(other);
+                return;
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.tag.Equals(Tag.Obstacle))
+        if (other.gameObject.tag.Equals(Tag.Goal))
         {
-            OnObstacleCollision(other.gameObject);
+            Debug.Log("WIN!");
         }
+    }
+
+    private void KnockBack(GameObject other, float force)
+    {
+        rb.AddForce((transform.position - other.gameObject.transform.position).normalized * force,
+            ForceMode2D.Impulse);
+    }
+
+    private void OnObstacleCollision(GameObject other)
+    {
+        if (currentDamageCooldown < 0)
+        {
+            hurtSfx.Play();
+            health -= 1;
+            KnockBack(other, other.gameObject.GetComponent<ObstacleController>().GetKnockBack());
+            currentDamageCooldown = damageCooldown;
+            view.PlayHurt(damageCooldown);
+        }
+    }
+
+    private void OnTerrainCollision(Collision2D other)
+    {
+        bumpSfx.Play();
+        KnockBack(other.gameObject, terrainKnockBack);
     }
 }

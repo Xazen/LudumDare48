@@ -1,4 +1,4 @@
-using System;
+using DG.Tweening;
 using UnityEngine;
 
 public class OctopusView : MonoBehaviour
@@ -11,6 +11,9 @@ public class OctopusView : MonoBehaviour
     
     [SerializeField]
     private Animator animator;
+
+    [SerializeField]
+    private SpriteRenderer sprite;
 
     [SerializeField]
     private float idleCooldown = 1f;
@@ -64,5 +67,13 @@ public class OctopusView : MonoBehaviour
     {
         currentIdleCooldown = idleCooldown;
         animator.SetTrigger(animationHash);
+    }
+
+    public void PlayHurt(float animationDuration)
+    {
+        var loops = 16;
+        sprite.DOFade(0.25f,
+            animationDuration / loops).SetLoops(loops,
+            LoopType.Yoyo);
     }
 }
