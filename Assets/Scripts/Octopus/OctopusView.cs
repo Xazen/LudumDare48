@@ -7,7 +7,10 @@ public class OctopusView : MonoBehaviour
     private readonly int down = Animator.StringToHash("Down");
     private readonly int left = Animator.StringToHash("Left");
     private readonly int right = Animator.StringToHash("Right");
+    private readonly int hurt = Animator.StringToHash("Hurt");
     private readonly int idle = Animator.StringToHash("Idle");
+    private readonly int horizontalMovement = Animator.StringToHash("HorizontalMovement");
+    private readonly int verticalMovement = Animator.StringToHash("VerticalMovement");
     
     [SerializeField]
     private Animator animator;
@@ -48,13 +51,24 @@ public class OctopusView : MonoBehaviour
         Debug.Log("Player Down");
         PlayMove(down);
     }
-
+    
     public void PlayIdle()
     {
-        if (currentIdleCooldown <= 0)
+        Debug.Log("Player Idle");
+        animator.SetTrigger(idle);
+    }
+
+    public void UpdateMovementAnimation(float horizontal, float vertical)
+    {
+        if (Mathf.Abs(horizontal) > Mathf.Abs(vertical))
         {
-            Debug.Log("Player Idle");
-            animator.SetTrigger(idle);
+            animator.SetFloat(horizontalMovement, horizontal);
+            animator.SetFloat(verticalMovement, 0);
+        }
+        else
+        {
+            animator.SetFloat(horizontalMovement, 0);
+            animator.SetFloat(verticalMovement, vertical);
         }
     }
 
@@ -71,6 +85,7 @@ public class OctopusView : MonoBehaviour
 
     public void PlayHurt(float animationDuration)
     {
+        animator.SetTrigger(hurt);
         var loops = 16;
         sprite.DOFade(0.25f,
             animationDuration / loops).SetLoops(loops,

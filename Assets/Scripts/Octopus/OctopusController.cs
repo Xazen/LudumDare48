@@ -45,13 +45,16 @@ public class OctopusController : MonoBehaviour
     private float damageCooldown = 3;
     
     private Rigidbody2D rb;
+    private float currentHealth;
     private float currentSwimCooldown;
     private float currentDamageCooldown;
     private float lastVelocity;
+    public float CurrentHealth => currentHealth;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        currentHealth = health;
     }
 
     private void FixedUpdate()
@@ -75,17 +78,19 @@ public class OctopusController : MonoBehaviour
             swimSfx.Play();
         }
 
-        if (rb.velocity.magnitude > maxMoveSpeed)
+        Vector2 velocity = rb.velocity;
+        if (velocity.magnitude > maxMoveSpeed)
         {
-            rb.velocity = rb.velocity.normalized * maxMoveSpeed;
+            rb.velocity = velocity.normalized * maxMoveSpeed;
         }
 
-        if (lastVelocity > speedToSwitchToIdle && rb.velocity.magnitude < speedToSwitchToIdle)
+        if (lastVelocity > speedToSwitchToIdle && velocity.magnitude < speedToSwitchToIdle)
         {
             view.PlayIdle();
         }
+        view.UpdateMovementAnimation(velocity.x, velocity.y);
 
-        lastVelocity = rb.velocity.magnitude;
+        lastVelocity = velocity.magnitude;
     }
 
     private void PlayAnimation(Vector3 directionInput)
@@ -170,11 +175,14 @@ public class OctopusController : MonoBehaviour
         if (currentDamageCooldown < 0)
         {
             hurtSfx.Play();
-            health -= 1;
+            currentHealth -= 1;
             KnockBack(other, other.gameObject.GetComponent<ObstacleController>().GetKnockBack());
             currentDamageCooldown = damageCooldown;
             view.PlayHurt(damageCooldown);
-            Singletons.ScenesController.OpenLose();
+            if (currentHealth <= 0)
+            {
+                Singletons.ScenesController.OpenLose();
+            }
         }
     }
 

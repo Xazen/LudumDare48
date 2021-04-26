@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityTemplateProjects;
@@ -5,6 +6,9 @@ using UnityTemplateProjects;
 public class GameMenu : MonoBehaviour
 {
     [SerializeField] private Button pauseButton;
+    [SerializeField] private Slider healthSlider;
+    [SerializeField] private OctopusController octopus;
+
     
     // Start is called before the first frame update
     private void Start()
@@ -13,6 +17,11 @@ public class GameMenu : MonoBehaviour
         pauseButton.onClick.AddListener(OnPauseClick);
         Singletons.ScenesController.OnSceneUnloaded += OnSceneUnloaded;
         Singletons.ScenesController.OnSceneLoaded += OnSceneLoaded;
+    }
+
+    private void Update()
+    {
+        healthSlider.value = octopus.CurrentHealth;
     }
 
     private void OnSceneLoaded(int sceneid)
