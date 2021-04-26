@@ -17,7 +17,7 @@ public class StoryMenu : MonoBehaviour
 
     [SerializeField]
     private AudioSource charSfx;
-    private bool isCompleted;
+    private bool isTextCompleted;
     private TweenerCore<string, string, StringOptions> textTweener;
 
     // Start is called before the first frame update
@@ -30,7 +30,7 @@ public class StoryMenu : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) && textTweener != null)
         {
-            if (isCompleted == false)
+            if (isTextCompleted == false)
             {
                 textTweener?.Complete(true);
             }
@@ -52,8 +52,9 @@ public class StoryMenu : MonoBehaviour
         storyText.text = string.Empty;
         yield return new WaitForSeconds(1.5f);
         var charAnimationDuration = 0.13f;
-        isCompleted = false;
-        textTweener = storyText.DOText(text, text.Length * charAnimationDuration).OnComplete(() => isCompleted = true);
+        isTextCompleted = false;
+        textTweener = storyText.DOText(text, text.Length * charAnimationDuration)
+            .OnComplete(() => isTextCompleted = true);
 
         for (int i = 0; i < text.Length; i++)
         {
@@ -61,7 +62,7 @@ public class StoryMenu : MonoBehaviour
                 1.2f);
             charSfx.Play();
             yield return new WaitForSeconds(charAnimationDuration);
-            if (isCompleted)
+            if (isTextCompleted)
             {
                 break;
             }
